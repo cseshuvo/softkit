@@ -99,7 +99,7 @@
                     <i class="icon-list menu-icon"></i><span class="nav-text">@lang('Settings')</span>
                 </a>
                 <ul aria-expanded="false">
-                    <li><a href="#" aria-expanded="false">@lang('General Setting')</a></li>
+                    <li><a href="{{ route('admin.settings.general') }}" aria-expanded="false">@lang('General Setting')</a></li>
                     <li><a href="#" aria-expanded="false">@lang('Email Template')</a></li>
                     <li><a href="#" aria-expanded="false">@lang('Maintenance Mode')</a></li>
                     <li><a href="#" aria-expanded="false">@lang('Custom CSS')</a></li>

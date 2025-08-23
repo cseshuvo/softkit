@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\RolePermission\RolePermissionController;
+use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -32,12 +33,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
             return view('admin.dashboard');
         })->name('dashboard');
     });
+
+    // Roles
     
     Route::get('role-permission', [RolePermissionController::class, 'index'])->name('role.permission.index');
     Route::post('role-permission/role-store', [RolePermissionController::class, 'roleStore'])->name('role.permission.role.store');
     Route::post('role-permission/permission-store', [RolePermissionController::class, 'permissionStore'])->name('role.permission.permission.store');
     Route::post('role-permission/assign-permission/{role}', [RolePermissionController::class, 'assignPermissionStore'])->name('role.permission.assign.store');
-
 
 
       // Role & Permission page
@@ -55,6 +57,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Assign Permissions to Role
     Route::post('role-permission/assign/{role}', [RolePermissionController::class, 'assignPermissionStore'])
         ->name('role.permission.assign.store');
+
+
+    
+
+
+
+
+Route::prefix('settings')->name('settings.')->group(function () {
+    Route::get('general', [SettingController::class, 'general'])->name('general');
+});
+
 
 
 });
