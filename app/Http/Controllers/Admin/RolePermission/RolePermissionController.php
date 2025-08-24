@@ -9,54 +9,70 @@ use Spatie\Permission\Models\Role;
 
 class RolePermissionController extends Controller
 {
-    // Show Role & Permission page
+
     public function index()
     {
+        $title = 'Role & Permission';
+        $roles = Role::where('guard_name', 'admin')->get();
+        return view('admin.role-permission.index', compact('title', 'roles'));
+    }
+
+
+    public function create()
+    {
+        $title = 'Add Role & Permission';
         $roles = Role::where('guard_name', 'admin')->get();
         $permissions = Permission::where('guard_name', 'admin')->get()->groupBy('group_name');
-        return view('admin.role-permission.index', compact('roles', 'permissions'));
+        return view('admin.role-permission.create', compact('title', 'roles', 'permissions'));
     }
 
-    // Create new Role
-    public function roleStore(Request $request)
+    public function store(Request $request, $id = null)
     {
+        $roleId = $id;
+
         $request->validate([
-            'name' => 'required|unique:roles,name'
+            'name' => 'required|string|unique:roles,name,' . $id . ',id',
+            'permissions' => 'required|array',
+            'permissions.*' => 'exists:permissions,id',
         ]);
 
-        Role::create([
-            'name' => $request->name,
-            'guard_name' => 'admin'
-        ]);
+        if ($roleId) {
+            $role = Role::findOrFail($roleId);
+            $role->name = $request->name;
+            $role->save();
+        } else {
+            $role = Role::create([
+                'name' => $request->name,
+                'guard_name' => 'admin',
+            ]);
+        }
 
-        return redirect()->back()->with('success', 'Role created successfully');
+        $validPermissions = Permission::whereIn('id', $request->permissions ?? [])
+            ->where('guard_name', 'admin')
+            ->pluck('id');
+
+        $role->syncPermissions($validPermissions);
+
+        return redirect()->back()->with('success', $roleId
+            ? __('Role updated successfully')
+            : __('Role created successfully'));
     }
 
-    // Create new Permission
-    public function permissionStore(Request $request)
+    public function edit($id)
     {
-        $request->validate([
-            'name' => 'required'
-        ]);
-
-        Permission::create([
-            'name' => $request->name,
-            'group_name' => $request->group_name ?? null,
-            'guard_name' => 'admin'
-        ]);
-
-        return redirect()->back()->with('success', 'Permission created successfully');
+        $title = 'Edit Role & Permission';
+        $role = Role::findOrFail($id);
+        $permissions = Permission::where('guard_name', 'admin')->get()->groupBy('group_name');
+        return view('admin.role-permission.create', compact('role', 'permissions', 'title'));
     }
 
-    // Assign Permissions to Role
-    public function assignPermissionStore(Request $request, Role $role)
+    public function destroy($id)
     {
-        $request->validate([
-            'permissions' => 'array'
-        ]);
-
-        $role->syncPermissions($request->permissions);
-
-        return redirect()->back()->with('success', 'Permissions assigned successfully');
+        $role = Role::findOrFail($id);
+        if (in_array($role->name, ['Super Admin'])) {
+            return redirect()->back()->with('error', __('This role cannot be deleted.'));
+        }
+        $role->delete();
+        return redirect()->back()->with('success', __('Role deleted successfully!'));
     }
 }

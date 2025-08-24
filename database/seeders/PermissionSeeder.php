@@ -14,17 +14,38 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            'add admin',
-            'manage admin',
-            'edit admin',
-            'delete admin',
+            'Admin Management' => [
+                'add admin',
+                'manage admin',
+                'edit admin',
+                'delete admin',
+            ],
+            'Setting' => [
+                'general setting',
+                'email setting',
+                'maintenance mode',
+                'custom css',
+            ],
+
         ];
 
-        foreach ($permissions as $perm) {
-            Permission::firstOrCreate([
-                'name'       => $perm,
-                'guard_name' => 'admin'
-            ]);
+        foreach ($permissions as $group => $perms) {
+            foreach ($perms as $perm) {
+                $permission = Permission::firstOrCreate(
+                    [
+                        'name' => $perm,
+                        'guard_name' => 'admin',
+                    ],
+                    [
+                        'group_name' => $group,
+                    ]
+                );
+
+                if ($permission->group_name !== $group) {
+                    $permission->group_name = $group;
+                    $permission->save();
+                }
+            }
         }
     }
 }

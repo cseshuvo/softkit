@@ -35,43 +35,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 
     // Roles
-    
-    Route::get('role-permission', [RolePermissionController::class, 'index'])->name('role.permission.index');
-    Route::post('role-permission/role-store', [RolePermissionController::class, 'roleStore'])->name('role.permission.role.store');
-    Route::post('role-permission/permission-store', [RolePermissionController::class, 'permissionStore'])->name('role.permission.permission.store');
-    Route::post('role-permission/assign-permission/{role}', [RolePermissionController::class, 'assignPermissionStore'])->name('role.permission.assign.store');
+
+    Route::prefix('role/permission')->name('role.permission.')->controller(RolePermissionController::class)->group(function () {
+
+        Route::get('/', [RolePermissionController::class, 'index'])->name('index');
+        Route::get('create', [RolePermissionController::class, 'create'])->name('create');
+        Route::post('store/{id?}', [RolePermissionController::class, 'store'])->name('store');
+        Route::get('edit/{id}', [RolePermissionController::class, 'edit'])->name('edit');
+        Route::delete('destroy/{id}', [RolePermissionController::class, 'destroy'])->name('destroy');
+    });
 
 
-      // Role & Permission page
-    Route::get('role-permission', [RolePermissionController::class, 'index'])
-        ->name('role.permission.index');
-
-    // Create Role
-    Route::post('role-permission/role-store', [RolePermissionController::class, 'roleStore'])
-        ->name('role.permission.role.store');
-
-    // Create Permission
-    Route::post('role-permission/permission-store', [RolePermissionController::class, 'permissionStore'])
-        ->name('role.permission.permission.store');
-
-    // Assign Permissions to Role
-    Route::post('role-permission/assign/{role}', [RolePermissionController::class, 'assignPermissionStore'])
-        ->name('role.permission.assign.store');
-
-
-    
-
-
-
-
-Route::prefix('settings')->name('settings.')->group(function () {
-    Route::get('general', [SettingController::class, 'general'])->name('general');
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('general', [SettingController::class, 'general'])->name('general');
+    });
 });
 
 
 
-});
-
-
-
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

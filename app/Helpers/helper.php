@@ -20,7 +20,7 @@ if (!function_exists('str_headline')) {
 }
 
 if (!function_exists('str_limit')) {
-    function str_limit($string, $default=30): string
+    function str_limit($string, $default = 30): string
     {
         return Str::limit($string, $default);
     }
@@ -43,7 +43,7 @@ if (!function_exists('getFile')) {
 
         try {
             if ($disk == 'public') {
-                $localImage = asset('/'.$image) ;
+                $localImage = asset('/' . $image);
                 return !empty($image) && Storage::disk($disk)->exists($image) ? $localImage : $default;
             } else {
                 return !empty($image) && Storage::disk($disk)->exists($image) ? Storage::disk($disk)->url($image) : $default;
@@ -104,7 +104,7 @@ if (!function_exists('timeZones')) {
             $timezones[$zone] = "(UTC $offset) $zone";
         }
 
-        asort($timezones); 
+        asort($timezones);
         return $timezones;
     }
 }
@@ -452,5 +452,12 @@ if (!function_exists('countries')) {
             'ZW' => 'Zimbabwe',
         ];
     }
-}
 
+
+    if (! function_exists('showWord')) {
+        function showWord($permission)
+        {
+            return ucwords(str_replace(['-', '_'], ' ', $permission));
+        }
+    }
+}
