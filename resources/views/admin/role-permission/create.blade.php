@@ -18,6 +18,10 @@
                                 <span>{{ __($title) }}</span>
                             </h4>
                             <div class="d-flex flex-wrap">
+                                   <a href="{{ route('admin.role.permission.index') }}"
+                                    class="btn btn-info text-white btn-sm">
+                                    <i class="fa fa-plus"></i> @lang('All List')
+                                </a>
                             </div>
                         </div>
 

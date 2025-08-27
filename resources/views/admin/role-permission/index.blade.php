@@ -16,7 +16,7 @@
                             </h4>
                             <div class="d-flex flex-wrap">
                                 <a href="{{ route('admin.role.permission.create') }}"
-                                    class="btn btn-dark text-white btn-sm">
+                                    class="btn btn-info text-white btn-sm">
                                     <i class="fa fa-plus"></i> @lang('Add New')
                                 </a>
                             </div>
